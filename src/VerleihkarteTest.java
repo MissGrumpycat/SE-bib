@@ -42,8 +42,6 @@ public class VerleihkarteTest
     @Test
     public void testgetMietgebuehr()
     {
-        // TODO für Aufgabe 4.2.4: Die Kommentarzeichen für die folgenden
-        // Anweisungen entfernen
          Datum tag1 = Datum.heute().minus(1);
          Verleihkarte karte = new Verleihkarte(_kunde, _medium, tag1);
          assertEquals(new Geldbetrag(300 * 2), karte.getMietgebuehr());

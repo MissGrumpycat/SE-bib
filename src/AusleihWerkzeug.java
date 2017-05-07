@@ -1,5 +1,6 @@
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.List;
 
 import javax.swing.JPanel;
@@ -208,13 +209,20 @@ class AusleihWerkzeug
      * Leiht die ausgewählten Medien aus. Diese Methode wird über einen Listener
      * angestoßen, der reagiert, wenn der Benutzer den Ausleihen-Button drückt.
      */
-    private void leiheAusgewaehlteMedienAus()
+    private void leiheAusgewaehlteMedienAus() 
     {
-        List<Medium> selectedMedien = _medienAuflisterWerkzeug
+        try
+        {List<Medium> selectedMedien = _medienAuflisterWerkzeug
                 .getSelectedMedien();
         Kunde selectedKunde = _kundenAuflisterWerkzeug.getSelectedKunde();
         Datum heute = Datum.heute();
         _verleihService.verleiheAn(selectedKunde, selectedMedien, heute);
+    }
+        catch (IOException e)
+        {
+        	JOptionPane.showMessageDialog(null, <Sinnvolle Fehlerbeschreibung>,
+        			"Fehlermeldung", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     /**

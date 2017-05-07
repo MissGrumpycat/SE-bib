@@ -27,6 +27,11 @@ class VerleihServiceImpl extends AbstractObservableService implements
      * Der Kundenstamm.
      */
     private KundenstammService _kundenstamm;
+    
+    /**
+     * Das Verleihprotokoll
+     */
+    private VerleihProtokollierer _verleihprotokollierer;
 
     /**
      * Konstruktor. Erzeugt einen neuen VerleihServiceImpl.
@@ -34,6 +39,7 @@ class VerleihServiceImpl extends AbstractObservableService implements
      * @param kundenstamm Der KundenstammService.
      * @param medienbestand Der MedienbestandService.
      * @param initialBestand Der initiale Bestand.
+     * @param verleihprotokollierer Der Verleihprotokollierer.
      * 
      * @require kundenstamm != null
      * @require medienbestand != null
@@ -41,7 +47,8 @@ class VerleihServiceImpl extends AbstractObservableService implements
      */
     public VerleihServiceImpl(KundenstammService kundenstamm,
             MedienbestandService medienbestand,
-            List<Verleihkarte> initialBestand)
+            List<Verleihkarte> initialBestand) 
+            //Verleihprotokollierer verleihprotokollierer)
     {
         assert kundenstamm != null : "Vorbedingung verletzt: kundenstamm  != null";
         assert medienbestand != null : "Vorbedingung verletzt: medienbestand  != null";
@@ -49,6 +56,7 @@ class VerleihServiceImpl extends AbstractObservableService implements
         _verleihkarten = erzeugeVerleihkartenBestand(initialBestand);
         _kundenstamm = kundenstamm;
         _medienbestand = medienbestand;
+        //_verleihprotokollierer = verleihprotokollierer;
     }
 
     /**
@@ -87,6 +95,7 @@ class VerleihServiceImpl extends AbstractObservableService implements
         return sindAlleNichtVerliehen(medien);
     }
 
+    //hier muss protokolliert werden
     @Override
     public void nimmZurueck(List<Medium> medien, Datum rueckgabeDatum)
     {
@@ -95,7 +104,10 @@ class VerleihServiceImpl extends AbstractObservableService implements
 
         for (Medium medium : medien)
         {
+        	String ereignis = "Rueckgabe";
+            VerleihProtokollierer.protokolliere(ereignis, _verleihkarten.get(medium));
             _verleihkarten.remove(medium);
+            // TODO rückgabe
         }
 
         informiereUeberAenderung();
@@ -158,6 +170,7 @@ class VerleihServiceImpl extends AbstractObservableService implements
         return result;
     }
 
+    //protokoll
     @Override
     public void verleiheAn(Kunde kunde, List<Medium> medien, Datum ausleihDatum)
     {
@@ -172,6 +185,9 @@ class VerleihServiceImpl extends AbstractObservableService implements
                     ausleihDatum);
 
             _verleihkarten.put(medium, verleihkarte);
+            String ereignis = "Ausleihe";
+            VerleihProtokollierer.protokolliere(ereignis, verleihkarte);
+            // TODO ausleihe
         }
 
         informiereUeberAenderung();
