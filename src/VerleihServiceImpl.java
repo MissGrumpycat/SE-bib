@@ -97,15 +97,14 @@ class VerleihServiceImpl extends AbstractObservableService implements
 
     //hier muss protokolliert werden
     @Override
-    public void nimmZurueck(List<Medium> medien, Datum rueckgabeDatum)
+    public void nimmZurueck(List<Medium> medien, Datum rueckgabeDatum) throws ProtokollierException
     {
         assert sindAlleVerliehen(medien) : "Vorbedingung verletzt: sindVerliehen(medien)";
         assert rueckgabeDatum != null : "Vorbedingung verletzt: rueckgabeDatum != null";
 
         for (Medium medium : medien)
         {
-        	String ereignis = "Rueckgabe";
-            VerleihProtokollierer.protokolliere(ereignis, _verleihkarten.get(medium));
+        	VerleihProtokollierer.protokolliere("Rueckgabe", getVerleihkarteFuer(medium));
             _verleihkarten.remove(medium);
             // TODO rückgabe
         }
@@ -172,7 +171,7 @@ class VerleihServiceImpl extends AbstractObservableService implements
 
     //protokoll
     @Override
-    public void verleiheAn(Kunde kunde, List<Medium> medien, Datum ausleihDatum)
+    public void verleiheAn(Kunde kunde, List<Medium> medien, Datum ausleihDatum) throws ProtokollierException
     {
         assert kundeImBestand(kunde) : "Vorbedingung verletzt: kundeImBestand(kunde)";
         assert sindAlleNichtVerliehen(medien) : "Vorbedingung verletzt: sindNichtVerliehen(medien) ";
@@ -184,10 +183,9 @@ class VerleihServiceImpl extends AbstractObservableService implements
             Verleihkarte verleihkarte = new Verleihkarte(kunde, medium,
                     ausleihDatum);
 
-            _verleihkarten.put(medium, verleihkarte);
-            String ereignis = "Ausleihe";
-            VerleihProtokollierer.protokolliere(ereignis, verleihkarte);
+            VerleihProtokollierer.protokolliere("Ausleihe", verleihkarte);
             // TODO ausleihe
+            _verleihkarten.put(medium, verleihkarte);
         }
 
         informiereUeberAenderung();

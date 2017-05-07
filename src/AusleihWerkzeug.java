@@ -3,6 +3,7 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.List;
 
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 /**
@@ -211,16 +212,18 @@ class AusleihWerkzeug
      */
     private void leiheAusgewaehlteMedienAus() 
     {
-        try
-        {List<Medium> selectedMedien = _medienAuflisterWerkzeug
+        
+        List<Medium> selectedMedien = _medienAuflisterWerkzeug
                 .getSelectedMedien();
         Kunde selectedKunde = _kundenAuflisterWerkzeug.getSelectedKunde();
         Datum heute = Datum.heute();
-        _verleihService.verleiheAn(selectedKunde, selectedMedien, heute);
-    }
-        catch (IOException e)
+        try 
         {
-        	JOptionPane.showMessageDialog(null, <Sinnvolle Fehlerbeschreibung>,
+        _verleihService.verleiheAn(selectedKunde, selectedMedien, heute);
+        }
+        catch (ProtokollierException e)
+        {
+        	JOptionPane.showMessageDialog(null, e,
         			"Fehlermeldung", JOptionPane.ERROR_MESSAGE);
         }
     }

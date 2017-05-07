@@ -1,8 +1,10 @@
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.event.ListSelectionEvent;
@@ -138,13 +140,22 @@ class RueckgabeWerkzeug
      */
     private void nimmAusgewaehlteMedienZurueck()
     {
+       
         List<Verleihkarte> verleihkarten = getSelectedVerleihkarten();
         List<Medium> medien = new ArrayList<Medium>();
         for (Verleihkarte verleihkarte : verleihkarten)
         {
             medien.add(verleihkarte.getMedium());
         }
+    	try
+    	{
         _verleihService.nimmZurueck(medien, Datum.heute());
+    	}
+        catch (ProtokollierException e)
+        {
+        	JOptionPane.showMessageDialog(null, e,
+        			"Fehlermeldung", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     /**
